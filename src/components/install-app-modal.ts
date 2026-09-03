@@ -27,6 +27,10 @@ export default class InstallAppModal extends LitElement{
 
     static override get styles(): CSSResult{
         return css`
+            :host {
+                display: contents;
+            }
+
             .head {
                 display: flex;
                 align-items: center;

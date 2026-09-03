@@ -21,6 +21,7 @@ export default class LoadingOverlay extends LitElement{
                 inset: 0;
                 z-index: 100;
                 background: rgba(27, 30, 34, 0.55);
+                -webkit-backdrop-filter: blur(2px);
                 backdrop-filter: blur(2px);
                 display: flex;
                 align-items: center;

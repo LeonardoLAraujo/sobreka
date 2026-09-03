@@ -22,6 +22,7 @@ export default class AppModal extends LitElement{
                 position: fixed;
                 inset: 0;
                 background: rgba(0, 0, 0, 0.7);
+                -webkit-backdrop-filter: blur(4px);
                 backdrop-filter: blur(4px);
                 z-index: 50;
                 display: flex;

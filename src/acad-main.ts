@@ -195,6 +195,8 @@ export default class AcadMain extends LitElement{
             const downloaded = await hasDownloadedApp(userId);
             if (!downloaded) {
                 this.showInstallModal = true;
+                await this.updateComplete;
+                await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
             }
         } catch {
             // se a checagem falhar, simplesmente não mostra o popup dessa vez
