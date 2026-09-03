@@ -12,7 +12,7 @@ export interface SplitCard {
     items: SplitExercise[];
 }
 
-export type WeeklySplit = Record<Weekday, SplitCard | null>;
+export type WeeklySplit = Record<Weekday, SplitCard[]>;
 
 export const WEEKDAY_ORDER: Weekday[] = ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'];
 
@@ -27,5 +27,5 @@ export const WEEKDAY_LABELS: Record<Weekday, string> = {
 };
 
 export function createEmptySplit(): WeeklySplit{
-    return {seg: null, ter: null, qua: null, qui: null, sex: null, sab: null, dom: null};
+    return {seg: [], ter: [], qua: [], qui: [], sex: [], sab: [], dom: []};
 }

@@ -31,7 +31,7 @@ export async function fetchWeeklySplit(userId: number): Promise<WeeklySplit>{
         if (!card) {
             card = {id: row.training_id, title: row.nome_treino ?? '', items: []};
             cardsById.set(row.training_id, card);
-            split[weekday] = card;
+            split[weekday].push(card);
         }
 
         if (row.exercice_id !== null) {

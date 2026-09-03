@@ -1,6 +1,6 @@
 import {LitElement, html, css, nothing, TemplateResult, CSSResult} from 'lit';
 import {customElement, query, queryAll, state} from 'lit/decorators.js';
-import {createEmptySplit, WEEKDAY_LABELS, WEEKDAY_ORDER, type SplitExercise, type Weekday, type WeeklySplit} from '../models/split';
+import {createEmptySplit, WEEKDAY_LABELS, WEEKDAY_ORDER, type SplitCard, type SplitExercise, type Weekday, type WeeklySplit} from '../models/split';
 import {getSessionUserId} from '../models/auth';
 import {deleteTraining, fetchWeeklySplit, moveTraining, saveTraining} from '../models/trainings';
 import AcadMain from '../acad-main';
@@ -19,15 +19,18 @@ export default class WeeklySplitPage extends LitElement{
     @state() private modalOpen = false;
     @state() private targetDay: Weekday | null = null;
     @state() private isNewCard = false;
+    @state() private editingCardId: number | null = null;
     @state() private draftTitle = '';
     @state() private draftItems: SplitExercise[] = [];
     @state() private draftItemName = '';
     @state() private draftItemDescription = '';
     @state() private saving = false;
     @state() private draggingDay: Weekday | null = null;
+    @state() private draggingCardId: number | null = null;
     @state() private hoverDay: Weekday | null = null;
     @state() private confirmModalOpen = false;
     @state() private confirmDay: Weekday | null = null;
+    @state() private confirmCardId: number | null = null;
 
     @query('.drag-ghost') private ghostEl?: HTMLDivElement;
     @query('#split-title') private titleInput?: HTMLInputElement;
@@ -182,6 +185,9 @@ export default class WeeklySplitPage extends LitElement{
             .day-slot {
                 flex: 1;
                 min-width: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
                 border-radius: 14px;
                 transition: background-color 0.15s ease, border-color 0.15s ease;
                 border: 1px dashed transparent;
@@ -214,6 +220,36 @@ export default class WeeklySplitPage extends LitElement{
                 font-family: inherit;
                 padding: 6px;
                 text-align: center;
+                cursor: pointer;
+            }
+
+            .add-card:hover {
+                border-color: #4E555D;
+                color: #ECEAE3;
+            }
+
+            .add-more-btn {
+                width: 100%;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                background: rgba(27, 30, 34, 0.4);
+                border: 1px dashed #33383F;
+                border-radius: 12px;
+                color: #6E757E;
+                font-family: inherit;
+                font-size: 11px;
+                font-weight: 600;
+                padding: 8px;
+                cursor: pointer;
+            }
+
+            .add-more-btn:hover {
+                color: #ECEAE3;
+                border-color: #4E555D;
+                background: #23262B;
             }
 
             .add-card ui-icon {
@@ -323,7 +359,7 @@ export default class WeeklySplitPage extends LitElement{
 
             .card {
                 width: 100%;
-                height: 100%;
+                flex-shrink: 0;
                 display: flex;
                 flex-direction: column;
                 gap: 10px;
@@ -707,17 +743,10 @@ export default class WeeklySplitPage extends LitElement{
         }
     }
 
-    private get emptyDays(): Weekday[]{
-        return WEEKDAY_ORDER.filter(day => !this.split[day]);
-    }
-
-    private openCreateModal(): void{
-        const firstEmpty = this.emptyDays[0];
-        if (!firstEmpty) {
-            return;
-        }
-        this.targetDay = firstEmpty;
+    private openCreateModal(day: Weekday = 'seg'): void{
+        this.targetDay = day;
         this.isNewCard = true;
+        this.editingCardId = null;
         this.draftTitle = '';
         this.draftItems = [];
         this.draftItemName = '';
@@ -726,12 +755,12 @@ export default class WeeklySplitPage extends LitElement{
         requestAnimationFrame(() => this.titleInput?.focus());
     }
 
-    private openEditModal(day: Weekday): void{
+    private openEditModal(day: Weekday, card: SplitCard): void{
         this.targetDay = day;
         this.isNewCard = false;
-        const existing = this.split[day];
-        this.draftTitle = existing?.title ?? '';
-        this.draftItems = existing?.items ?? [];
+        this.editingCardId = card.id;
+        this.draftTitle = card.title;
+        this.draftItems = card.items;
         this.draftItemName = '';
         this.draftItemDescription = '';
         this.modalOpen = true;
@@ -742,6 +771,7 @@ export default class WeeklySplitPage extends LitElement{
         this.modalOpen = false;
         this.targetDay = null;
         this.isNewCard = false;
+        this.editingCardId = null;
     }
 
     private addDraftItem(): void{
@@ -778,12 +808,17 @@ export default class WeeklySplitPage extends LitElement{
         AcadMain.instance?.showLoading();
         try {
             const card = await saveTraining(this.userId, {
-                trainingId: this.isNewCard ? null : (this.split[day]?.id ?? null),
+                trainingId: this.isNewCard ? null : this.editingCardId,
                 title,
                 weekday: day,
                 items: this.draftItems,
             });
-            this.split = {...this.split, [day]: card};
+            this.split = {
+                ...this.split,
+                [day]: this.isNewCard
+                    ? [...this.split[day], card]
+                    : this.split[day].map(existing => existing.id === card.id ? card : existing),
+            };
             this.closeModal();
         } catch {
             this.toast?.show('Não foi possível salvar o treino. Tente novamente.', 'erro');
@@ -793,34 +828,36 @@ export default class WeeklySplitPage extends LitElement{
         }
     }
 
-    private requestRemoveCard(day: Weekday): void{
+    private requestRemoveCard(day: Weekday, cardId: number): void{
         this.confirmDay = day;
+        this.confirmCardId = cardId;
         this.confirmModalOpen = true;
     }
 
     private closeConfirmModal(): void{
         this.confirmModalOpen = false;
         this.confirmDay = null;
+        this.confirmCardId = null;
     }
 
     private confirmRemoveCard(): void{
         const day = this.confirmDay;
+        const cardId = this.confirmCardId;
         this.closeConfirmModal();
-        if (day) {
-            void this.removeCard(day);
+        if (day && cardId !== null) {
+            void this.removeCard(day, cardId);
         }
     }
 
-    private async removeCard(day: Weekday): Promise<void>{
-        const card = this.split[day];
-        if (!card || this.userId === null) {
+    private async removeCard(day: Weekday, cardId: number): Promise<void>{
+        if (this.userId === null) {
             return;
         }
         const previous = this.split;
-        this.split = {...this.split, [day]: null};
+        this.split = {...this.split, [day]: this.split[day].filter(card => card.id !== cardId)};
         AcadMain.instance?.showLoading();
         try {
-            await deleteTraining(this.userId, card.id);
+            await deleteTraining(this.userId, cardId);
         } catch {
             this.split = previous;
             this.toast?.show('Não foi possível remover o treino.', 'erro');
@@ -848,11 +885,8 @@ export default class WeeklySplitPage extends LitElement{
         this.ghostEl.style.width = `${this.dragWidth}px`;
     }
 
-    private startDrag(event: PointerEvent, day: Weekday): void{
+    private startDrag(event: PointerEvent, day: Weekday, cardId: number): void{
         if ((event.target as HTMLElement).closest('.card-action')) {
-            return;
-        }
-        if (!this.split[day]) {
             return;
         }
         const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
@@ -860,6 +894,7 @@ export default class WeeklySplitPage extends LitElement{
         this.dragOffsetY = event.clientY - rect.top;
         this.dragWidth = rect.width;
         this.draggingDay = day;
+        this.draggingCardId = cardId;
         this.positionGhost(event.clientX, event.clientY);
         window.addEventListener('pointermove', this.onPointerMove);
         window.addEventListener('pointerup', this.onPointerUp);
@@ -876,31 +911,34 @@ export default class WeeklySplitPage extends LitElement{
     private onPointerUp = (): void => {
         window.removeEventListener('pointermove', this.onPointerMove);
         window.removeEventListener('pointerup', this.onPointerUp);
-        const from = this.draggingDay;
-        const to = this.hoverDay;
+        const fromDay = this.draggingDay;
+        const cardId = this.draggingCardId;
+        const toDay = this.hoverDay;
         this.draggingDay = null;
+        this.draggingCardId = null;
         this.hoverDay = null;
-        if (from && to && from !== to) {
-            void this.swapDays(from, to);
+        if (fromDay && cardId !== null && toDay && fromDay !== toDay) {
+            void this.moveCardToDay(fromDay, toDay, cardId);
         }
     };
 
-    private async swapDays(from: Weekday, to: Weekday): Promise<void>{
+    private async moveCardToDay(fromDay: Weekday, toDay: Weekday, cardId: number): Promise<void>{
         if (this.userId === null) {
             return;
         }
         const previous = this.split;
-        const fromCard = previous[from];
-        const toCard = previous[to];
-        this.split = {...previous, [from]: toCard, [to]: fromCard};
+        const card = previous[fromDay].find(existing => existing.id === cardId);
+        if (!card) {
+            return;
+        }
+        this.split = {
+            ...previous,
+            [fromDay]: previous[fromDay].filter(existing => existing.id !== cardId),
+            [toDay]: [...previous[toDay], card],
+        };
         AcadMain.instance?.showLoading();
         try {
-            if (fromCard) {
-                await moveTraining(this.userId, fromCard.id, to);
-            }
-            if (toCard) {
-                await moveTraining(this.userId, toCard.id, from);
-            }
+            await moveTraining(this.userId, cardId, toDay);
         } catch {
             this.split = previous;
             this.toast?.show('Não foi possível mover o treino.', 'erro');
@@ -909,20 +947,30 @@ export default class WeeklySplitPage extends LitElement{
         }
     }
 
-    private renderCard(day: Weekday): TemplateResult{
-        const card = this.split[day];
-        if (!card) {
+    private renderDaySlot(day: Weekday): TemplateResult{
+        const cards = this.split[day];
+        if (cards.length === 0) {
             return html`
-                <div class="add-card" title="Descanso">
+                <button class="add-card" type="button" title="Adicionar treino" @click=${() => this.openCreateModal(day)}>
                     <ui-icon name="moon" size="18"></ui-icon>
                     <span class="rest-label">Descanso</span>
-                </div>
+                </button>
             `;
         }
         return html`
+            ${cards.map(card => this.renderCard(day, card))}
+            <button class="add-more-btn" type="button" title="Adicionar outro treino" @click=${() => this.openCreateModal(day)}>
+                <ui-icon name="plus" size="12"></ui-icon>
+                <span>Adicionar treino</span>
+            </button>
+        `;
+    }
+
+    private renderCard(day: Weekday, card: SplitCard): TemplateResult{
+        return html`
             <div
-                class="card ${this.draggingDay === day ? 'dragging' : ''}"
-                @pointerdown=${(event: PointerEvent) => this.startDrag(event, day)}
+                class="card ${this.draggingDay === day && this.draggingCardId === card.id ? 'dragging' : ''}"
+                @pointerdown=${(event: PointerEvent) => this.startDrag(event, day, card.id)}
             >
                 <div class="card-head">
                     <div class="card-title-row">
@@ -933,10 +981,10 @@ export default class WeeklySplitPage extends LitElement{
                         </div>
                     </div>
                     <div class="card-actions">
-                        <button class="card-action" type="button" title="Editar" @click=${() => this.openEditModal(day)}>
+                        <button class="card-action" type="button" title="Editar" @click=${() => this.openEditModal(day, card)}>
                             <ui-icon name="edit" size="13"></ui-icon>
                         </button>
-                        <button class="card-action danger" type="button" title="Remover" @click=${() => this.requestRemoveCard(day)}>
+                        <button class="card-action danger" type="button" title="Remover" @click=${() => this.requestRemoveCard(day, card.id)}>
                             <ui-icon name="trash" size="13"></ui-icon>
                         </button>
                     </div>
@@ -958,7 +1006,9 @@ export default class WeeklySplitPage extends LitElement{
     }
 
     protected override render(): TemplateResult{
-        const draggingCard = this.draggingDay ? this.split[this.draggingDay] : null;
+        const draggingCard = this.draggingDay && this.draggingCardId !== null
+            ? this.split[this.draggingDay].find(card => card.id === this.draggingCardId) ?? null
+            : null;
         return html`
             <header>
                 <div class="header-inner">
@@ -970,8 +1020,8 @@ export default class WeeklySplitPage extends LitElement{
                         <button
                             class="create-btn"
                             type="button"
-                            ?disabled=${this.userId === null || this.emptyDays.length === 0}
-                            title=${this.emptyDays.length === 0 ? 'Todos os dias já têm um treino' : 'Criar treino'}
+                            ?disabled=${this.userId === null}
+                            title="Criar treino"
                             @click=${() => this.openCreateModal()}
                         >
                             <ui-icon name="plus" size="14"></ui-icon>
@@ -987,13 +1037,13 @@ export default class WeeklySplitPage extends LitElement{
                 ` : this.loading ? html`
                     <p class="hint">Carregando sua divisão semanal...</p>
                 ` : html`
-                    <p class="hint">Toque em um card e arraste para outro dia para trocar a ordem.</p>
+                    <p class="hint">Toque em um card e arraste para outro dia para movê-lo. Cada dia aceita mais de um treino.</p>
                     <div class="board">
                         ${WEEKDAY_ORDER.map(day => html`
                             <div class="day-column" data-weekday=${day}>
                                 <div class="day-header">${WEEKDAY_LABELS[day]}</div>
-                                <div class="day-slot ${!this.split[day] ? 'rest' : ''} ${this.hoverDay === day && this.draggingDay !== day ? 'drop-target' : ''}">
-                                    ${this.renderCard(day)}
+                                <div class="day-slot ${this.split[day].length === 0 ? 'rest' : ''} ${this.hoverDay === day && this.draggingDay !== day ? 'drop-target' : ''}">
+                                    ${this.renderDaySlot(day)}
                                 </div>
                             </div>
                         `)}
@@ -1040,7 +1090,7 @@ export default class WeeklySplitPage extends LitElement{
                                 .value=${this.targetDay ?? ''}
                                 @change=${(event: Event) => (this.targetDay = (event.target as HTMLSelectElement).value as Weekday)}
                             >
-                                ${this.emptyDays.map(day => html`<option value=${day}>${WEEKDAY_LABELS[day]}</option>`)}
+                                ${WEEKDAY_ORDER.map(day => html`<option value=${day}>${WEEKDAY_LABELS[day]}</option>`)}
                             </select>
                         </div>
                     ` : nothing}

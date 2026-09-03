@@ -174,8 +174,8 @@ export default class DayFormModal extends LitElement{
         try {
             const split = await fetchWeeklySplit(userId);
             const options: {id: number; title: string}[] = [];
-            for (const card of Object.values(split)) {
-                if (card) {
+            for (const cards of Object.values(split)) {
+                for (const card of cards) {
                     options.push({id: card.id, title: card.title});
                 }
             }

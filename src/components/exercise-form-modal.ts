@@ -342,7 +342,7 @@ export default class ExerciseFormModal extends LitElement{
         AcadMain.instance?.showLoading();
         try {
             const split = await fetchWeeklySplit(userId);
-            const card = Object.values(split).find(entry => entry?.id === this.trainingId);
+            const card = Object.values(split).flat().find(entry => entry.id === this.trainingId);
             const options: {id: number; name: string}[] = [];
             for (const item of card?.items ?? []) {
                 if (item.id) {
