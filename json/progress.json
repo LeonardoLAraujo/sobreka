@@ -1,0 +1,35 @@
+[
+    {
+        "id": "1",
+        "day": "Segunda-feira",
+        "date": "2026-08-31",
+        "training-focus": "Perna, Peito e Ombro",
+        "exercises": {
+            "exercise-1": {
+                "name": "Agachamento",
+                "sets": 4,
+                "repitions": "8-10 reps",
+                "rest": "90s",
+                "description": "Agachamento com barra, mantendo a postura correta e descendo até que as coxas fiquem paralelas ao chão.",
+                "series": [
+                    "Série 1: 10 reps com 50kg",
+                    "Série 2: 10 reps com 55kg",
+                    "Série 3: 8 reps com 60kg",
+                    "Série 4: 8 reps com 60kg"
+                ],
+                "historico": [
+                    {
+                        "data": "24/08/2026",
+                        "carga": 55,
+                        "seriesDet": ["Série 1: 10 reps com 50kg", "Série 2: 10 reps com 55kg"]
+                    },
+                    {
+                        "data": "31/08/2026",
+                        "carga": 57.5,
+                        "seriesDet": ["Série 1: 10 reps com 50kg", "Série 2: 10 reps com 55kg", "Série 3: 8 reps com 60kg", "Série 4: 8 reps com 60kg"]
+                    }
+                ]
+            }
+        }
+    }
+]

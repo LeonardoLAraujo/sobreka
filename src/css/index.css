@@ -1,0 +1,104 @@
+*{
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    font-family: 'Archivo', sans-serif;
+}
+
+:root {
+    color-scheme: light dark;
+    background-color: #1B1E22;
+}
+
+.driver-popover.sobreka-tour-popover,
+.driver-popover.sobreka-tour-popover * {
+    width: auto;
+    height: auto;
+}
+
+.driver-popover.sobreka-tour-popover {
+    background-color: #23262B;
+    border: 1px solid #33383F;
+    border-radius: 14px;
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.6);
+    font-family: 'Archivo', sans-serif;
+    padding: 18px 20px;
+}
+
+.driver-popover.sobreka-tour-popover .driver-popover-title {
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.driver-popover.sobreka-tour-popover .driver-popover-description {
+    color: #8A9099;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.driver-popover.sobreka-tour-popover .driver-popover-close-btn {
+    color: #6E757E;
+}
+
+.driver-popover.sobreka-tour-popover .driver-popover-close-btn:hover,
+.driver-popover.sobreka-tour-popover .driver-popover-close-btn:focus {
+    color: #ECEAE3;
+}
+
+.driver-popover.sobreka-tour-popover .driver-popover-progress-text {
+    color: #6E757E;
+    font-size: 12px;
+}
+
+.driver-popover.sobreka-tour-popover .driver-popover-footer-btn {
+    background-color: transparent;
+    border: 1px solid #4E555D;
+    color: #ECEAE3;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 600;
+    font-family: 'Archivo', sans-serif;
+}
+
+.driver-popover.sobreka-tour-popover .driver-popover-footer-btn:hover,
+.driver-popover.sobreka-tour-popover .driver-popover-footer-btn:focus {
+    background-color: #33383F;
+    border-color: #6E757E;
+}
+
+.driver-popover.sobreka-tour-popover .driver-popover-next-btn,
+.driver-popover.sobreka-tour-popover .driver-popover-done-btn {
+    background-color: #C8102E;
+    border: none;
+    color: #fff;
+}
+
+.driver-popover.sobreka-tour-popover .driver-popover-next-btn:hover,
+.driver-popover.sobreka-tour-popover .driver-popover-done-btn:hover,
+.driver-popover.sobreka-tour-popover .driver-popover-next-btn:focus,
+.driver-popover.sobreka-tour-popover .driver-popover-done-btn:focus {
+    background-color: #E8354F;
+}
+
+.driver-popover.sobreka-tour-popover .driver-popover-arrow {
+    border-color: #23262B;
+}
+
+@media (max-width: 480px) {
+    .driver-popover.sobreka-tour-popover {
+        max-width: calc(100vw - 32px);
+        padding: 16px 18px;
+    }
+
+    .driver-popover.sobreka-tour-popover .driver-popover-title {
+        font-size: 16px;
+    }
+
+    .driver-popover.sobreka-tour-popover .driver-popover-footer {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}

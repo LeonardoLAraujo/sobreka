@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "game": "God of War",
+    "character": "Kratos",
+    "quote": "Não confunda meu silêncio com fraqueza."
+  },
+  {
+    "id": 2,
+    "game": "God of War",
+    "character": "Kratos",
+    "quote": "Feche seu coração para isso. Não para o amor."
+  },
+  {
+    "id": 3,
+    "game": "The Witcher 3",
+    "character": "Geralt de Rívia",
+    "quote": "O mal é o mal. Menor, maior, médio... isso não importa."
+  },
+  {
+    "id": 4,
+    "game": "The Witcher 3",
+    "character": "Geralt de Rívia",
+    "quote": "Pessoas gostam de inventar monstros e monstruosidades."
+  },
+  {
+    "id": 5,
+    "game": "Red Dead Redemption 2",
+    "character": "Arthur Morgan",
+    "quote": "Nós somos ladrões em um mundo que não nos quer mais."
+  },
+  {
+    "id": 6,
+    "game": "Red Dead Redemption 2",
+    "character": "Arthur Morgan",
+    "quote": "Tenho medo de viver uma vida que não significa nada."
+  },
+  {
+    "id": 7,
+    "game": "The Last of Us",
+    "character": "Joel Miller",
+    "quote": "Você encontra algo pelo qual lutar."
+  },
+  {
+    "id": 8,
+    "game": "The Last of Us",
+    "character": "Ellie Williams",
+    "quote": "Depois de tudo pelo que passamos, de tudo que fizemos, não pode ser em vão."
+  },
+  {
+    "id": 9,
+    "game": "God of War Ragnarök",
+    "character": "Atreus",
+    "quote": "Eu não quero ser como você. Quero descobrir quem eu sou."
+  },
+  {
+    "id": 10,
+    "game": "Halo",
+    "character": "Master Chief",
+    "quote": "Sir, finishing this fight."
+  },
+  {
+    "id": 11,
+    "game": "Halo",
+    "character": "Master Chief",
+    "quote": "Wake me when you need me."
+  },
+  {
+    "id": 12,
+    "game": "Assassin's Creed",
+    "character": "Ezio Auditore",
+    "quote": "Nada é verdade, tudo é permitido."
+  },
+  {
+    "id": 13,
+    "game": "Assassin's Creed II",
+    "character": "Ezio Auditore",
+    "quote": "Requiescat in pace."
+  },
+  {
+    "id": 14,
+    "game": "Mass Effect",
+    "character": "Commander Shepard",
+    "quote": "We’ll bang, okay?"
+  },
+  {
+    "id": 15,
+    "game": "Metal Gear Solid",
+    "character": "Solid Snake",
+    "quote": "War has changed."
+  },
+  {
+    "id": 16,
+    "game": "Metal Gear Rising: Revengeance",
+    "character": "Raiden",
+    "quote": "Memes, Jack. The DNA of the soul."
+  },
+  {
+    "id": 17,
+    "game": "Dark Souls",
+    "character": "Solaire of Astora",
+    "quote": "Praise the Sun!"
+  },
+  {
+    "id": 18,
+    "game": "Dark Souls",
+    "character": "Solaire of Astora",
+    "quote": "If I may be so bold, I would like to summon you."
+  },
+  {
+    "id": 19,
+    "game": "Elden Ring",
+    "character": "Melina",
+    "quote": "I offer you an accord."
+  },
+  {
+    "id": 20,
+    "game": "Elden Ring",
+    "character": "Malenia",
+    "quote": "I am Malenia, Blade of Miquella."
+  },
+  {
+    "id": 21,
+    "game": "League of Legends",
+    "character": "Jhin",
+    "quote": "A masterpiece of emotion, violence, and beauty."
+  },
+  {
+    "id": 22,
+    "game": "League of Legends",
+    "character": "Yasuo",
+    "quote": "A espada sem propósito é apenas um pedaço de metal."
+  },
+  {
+    "id": 23,
+    "game": "League of Legends",
+    "character": "Thresh",
+    "quote": "Não há salvação."
+  },
+  {
+    "id": 24,
+    "game": "Mortal Kombat",
+    "character": "Scorpion",
+    "quote": "Get over here!"
+  },
+  {
+    "id": 25,
+    "game": "Mortal Kombat",
+    "character": "Raiden",
+    "quote": "There are fates worse than death."
+  },
+  {
+    "id": 26,
+    "game": "Resident Evil",
+    "character": "Leon S. Kennedy",
+    "quote": "Where's everyone going? Bingo?"
+  },
+  {
+    "id": 27,
+    "game": "Resident Evil",
+    "character": "Wesker",
+    "quote": "Seven minutes. Seven minutes is all I can spare to play with you."
+  },
+  {
+    "id": 28,
+    "game": "Final Fantasy VII",
+    "character": "Sephiroth",
+    "quote": "I will never be a memory."
+  },
+  {
+    "id": 29,
+    "game": "Final Fantasy VII",
+    "character": "Cloud Strife",
+    "quote": "I won't be a memory."
+  },
+  {
+    "id": 30,
+    "game": "Cyberpunk 2077",
+    "character": "Johnny Silverhand",
+    "quote": "Wake the fuck up, Samurai. We have a city to burn."
+  }
+]
