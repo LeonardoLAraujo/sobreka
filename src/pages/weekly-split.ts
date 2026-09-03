@@ -866,6 +866,27 @@ export default class WeeklySplitPage extends LitElement{
         }
     }
 
+    private async duplicateCard(day: Weekday, card: SplitCard): Promise<void>{
+        if (this.userId === null) {
+            return;
+        }
+        AcadMain.instance?.showLoading();
+        try {
+            const duplicated = await saveTraining(this.userId, {
+                trainingId: null,
+                title: `${card.title} (cópia)`,
+                weekday: day,
+                items: card.items.map(item => ({name: item.name, description: item.description})),
+            });
+            this.split = {...this.split, [day]: [...this.split[day], duplicated]};
+            this.toast?.show('Treino duplicado.', 'sucesso');
+        } catch {
+            this.toast?.show('Não foi possível duplicar o treino.', 'erro');
+        } finally {
+            AcadMain.instance?.hideLoading();
+        }
+    }
+
     private findColumnAt(x: number, y: number): Weekday | null{
         for (const column of this.dayColumns) {
             const rect = column.getBoundingClientRect();
@@ -983,6 +1004,9 @@ export default class WeeklySplitPage extends LitElement{
                     <div class="card-actions">
                         <button class="card-action" type="button" title="Editar" @click=${() => this.openEditModal(day, card)}>
                             <ui-icon name="edit" size="13"></ui-icon>
+                        </button>
+                        <button class="card-action" type="button" title="Duplicar" @click=${() => this.duplicateCard(day, card)}>
+                            <ui-icon name="copy" size="13"></ui-icon>
                         </button>
                         <button class="card-action danger" type="button" title="Remover" @click=${() => this.requestRemoveCard(day, card.id)}>
                             <ui-icon name="trash" size="13"></ui-icon>
