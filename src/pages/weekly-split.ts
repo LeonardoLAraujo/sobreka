@@ -874,7 +874,7 @@ export default class WeeklySplitPage extends LitElement{
         try {
             const duplicated = await saveTraining(this.userId, {
                 trainingId: null,
-                title: `${card.title} (cópia)`,
+                title: card.title,
                 weekday: day,
                 items: card.items.map(item => ({name: item.name, description: item.description})),
             });

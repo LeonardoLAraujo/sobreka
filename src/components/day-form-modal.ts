@@ -173,10 +173,17 @@ export default class DayFormModal extends LitElement{
         AcadMain.instance?.showLoading();
         try {
             const split = await fetchWeeklySplit(userId);
+            const seenNames = new Set<string>();
             const options: {id: number; title: string}[] = [];
             for (const cards of Object.values(split)) {
                 for (const card of cards) {
-                    options.push({id: card.id, title: card.title});
+                    const title = card.title.replace(/\s*\(cópia\)\s*$/i, '').trim();
+                    const key = title.toLowerCase();
+                    if (seenNames.has(key)) {
+                        continue;
+                    }
+                    seenNames.add(key);
+                    options.push({id: card.id, title});
                 }
             }
             this.trainingOptions = options.sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'));
