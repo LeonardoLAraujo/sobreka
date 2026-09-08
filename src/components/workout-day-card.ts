@@ -1,5 +1,5 @@
 import {LitElement, html, css, nothing, TemplateResult, CSSResult} from 'lit';
-import {customElement, property} from 'lit/decorators.js';
+import {customElement, property, state} from 'lit/decorators.js';
 import type {WorkoutDay} from '../models/progress';
 import {formatDateBR} from '../models/dateFormat';
 import './exercise-item';
@@ -15,10 +15,13 @@ export default class WorkoutDayCard extends LitElement{
     @property({type: Object}) day!: WorkoutDay;
     @property({type: Boolean}) readonly = false;
 
+    @state() private expanded = false;
+
     static override get styles(): CSSResult{
         return css`
             :host {
                 display: block;
+                align-self: start;
             }
 
             .card {
@@ -107,6 +110,15 @@ export default class WorkoutDayCard extends LitElement{
                 color: #f87171;
             }
 
+            .toggle-icon {
+                display: flex;
+                transition: transform 0.15s ease;
+            }
+
+            .toggle-icon.expanded {
+                transform: rotate(90deg);
+            }
+
             .exercises {
                 display: flex;
                 flex-direction: column;
@@ -121,6 +133,12 @@ export default class WorkoutDayCard extends LitElement{
                 font-style: italic;
                 color: #6E757E;
                 margin: 0;
+            }
+
+            .summary {
+                font-size: 12px;
+                color: #6E757E;
+                margin: 0 0 4px;
             }
 
             .add-exercise {
@@ -176,34 +194,45 @@ export default class WorkoutDayCard extends LitElement{
                             </div>
                             <h3>${day['training-focus']}</h3>
                         </div>
-                        ${this.readonly ? nothing : html`
-                            <div class="top-actions">
+                        <div class="top-actions">
+                            <button
+                                type="button"
+                                title=${this.expanded ? 'Recolher' : 'Expandir'}
+                                @click=${() => (this.expanded = !this.expanded)}
+                            >
+                                <ui-icon class="toggle-icon ${this.expanded ? 'expanded' : ''}" name="chevron-right" size="13"></ui-icon>
+                            </button>
+                            ${this.readonly ? nothing : html`
                                 <button type="button" title="Editar Treino" @click=${() => this.emit('edit-day')}>
                                     <ui-icon name="edit" size="13"></ui-icon>
                                 </button>
                                 <button class="delete" type="button" title="Excluir Treino" @click=${() => this.emit('delete-day')}>
                                     <ui-icon name="trash" size="13"></ui-icon>
                                 </button>
-                            </div>
-                        `}
+                            `}
+                        </div>
                     </div>
-                    <div class="exercises">
-                        ${exerciseKeys.length > 0 ? exerciseKeys.map(key => html`
-                            <exercise-item
-                                .exercise=${day.exercises[key]}
-                                .exerciseKey=${key}
-                                .dayId=${day.id}
-                                ?readonly=${this.readonly}
-                            ></exercise-item>
-                        `) : html`<p class="empty">Nenhum exercício adicionado neste dia.</p>`}
-                    </div>
+                    ${this.expanded ? html`
+                        <div class="exercises">
+                            ${exerciseKeys.length > 0 ? exerciseKeys.map(key => html`
+                                <exercise-item
+                                    .exercise=${day.exercises[key]}
+                                    .exerciseKey=${key}
+                                    .dayId=${day.id}
+                                    ?readonly=${this.readonly}
+                                ></exercise-item>
+                            `) : html`<p class="empty">Nenhum exercício adicionado neste dia.</p>`}
+                        </div>
+                    ` : html`
+                        <p class="summary">${exerciseKeys.length} exercício${exerciseKeys.length === 1 ? '' : 's'} cadastrado${exerciseKeys.length === 1 ? '' : 's'}</p>
+                    `}
                 </div>
-                ${this.readonly ? nothing : html`
+                ${this.expanded && !this.readonly ? html`
                     <button class="add-exercise" type="button" @click=${() => this.emit('add-exercise')}>
                         <ui-icon name="plus" size="14"></ui-icon>
                         <span>Adicionar Exercício</span>
                     </button>
-                `}
+                ` : nothing}
             </div>
         `;
     }

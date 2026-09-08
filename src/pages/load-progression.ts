@@ -170,7 +170,7 @@ export default class LoadProgression extends LitElement{
     }
 
     private get currentDays(): WorkoutDay[]{
-        return this.monthlyData[this.monthKey()] ?? [];
+        return [...(this.monthlyData[this.monthKey()] ?? [])].sort((a, b) => b.date.localeCompare(a.date));
     }
 
     private async loadData(): Promise<void>{
